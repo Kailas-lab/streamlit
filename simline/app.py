@@ -1,70 +1,56 @@
 import streamlit as st
+import pandas as pd
 import numpy as np
-import joblib
+import matplotlib.pyplot as plt
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import mean_squared_error, r2_score
+from sklearn.datasets import load_iris
 
-model = joblib.load('n.joblib')
-# Load the trained model
+# Streamlit app title
+st.title("Linear Regression App")
 
+# Load Iris dataset
+data = load_iris()
+df = pd.DataFrame(data.data, columns=data.feature_names)
+df['target'] = data.target
 
-# ---- Streamlit UI Styling ----
-st.set_page_config(page_title="Salary Predictor", page_icon="💰", layout="centered")
+st.write("### Data Preview")
+st.write(df.head())
 
-# Custom CSS for styling
-st.markdown(
-    """
-    <style>
-        body {
-            background-color: #004085;
-            color: #333;
-        }
-        .main-title {
-            font-size: 36px;
-            font-weight: bold;
-            text-align: center;
-            color: #007BFF;
-        }
-        .prediction-box {
-            background-color: #E3F2FD;
-            padding: 20px;
-            border-radius: 10px;
-            text-align: center;
-            font-size: 24px;
-            font-weight: bold;
-            color: #004085;
-        }
-    </style>
-    """,
-    unsafe_allow_html=True,
-)
+# Select features and target
+features = st.multiselect("Select feature columns", df.columns[:-1])
+target = st.selectbox("Select target column", df.columns)
 
-# ---- App Layout ----
-st.markdown('<h1 class="main-title">💼 Salary Prediction App 📈</h1>', unsafe_allow_html=True)
-
-st.write("### Predict your estimated salary based on years of experience!")
-
-# Sidebar for additional information
-st.sidebar.header("ℹ️ About")
-st.sidebar.info("This app predicts the salary based on the years of experience using a trained Machine Learning model.")
-
-# Input for years of experience
-years_exp = st.slider("Select Your Years of Experience:", min_value=0.0, max_value=50.0, step=0.1, value=2.0)
-
-# Additional input fields for better interactivity
-st.write("### Select Additional Options")
-gender = st.radio("Select Your Gender:", ("Male", "Female"))
-job_type = st.selectbox("Choose Job Type:", ["Software Engineer", "Data Scientist", "Manager", "Analyst", "Other"])
-
-# Prediction Button
-if st.button("🚀 Predict Salary"):
-    prediction = model.predict(np.array([[years_exp]]))
+if features and target:
+    X = df[features]
+    y = df[target]
     
-    st.markdown(
-        f'<div class="prediction-box">Predicted Salary: ₹{prediction[0]:,.2f}</div>',
-        unsafe_allow_html=True
-    )
-
-    st.success("✅ Prediction Successful! ")
-
-# Footer
-st.markdown("---")
-st.caption("📌 Built with ❤️ using Streamlit | Trained with Machine Learning | © 2025")
+    # Split data
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+    
+    # Train model
+    model = LinearRegression()
+    model.fit(X_train, y_train)
+    
+    # Make predictions
+    y_pred = model.predict(X_test)
+    
+    # Display model performance
+    st.write("### Model Performance")
+    st.write(f"Mean Squared Error: {mean_squared_error(y_test, y_pred):.2f}")
+    st.write(f"R² Score: {r2_score(y_test, y_pred):.2f}")
+    
+    # Display regression coefficients
+    st.write("### Model Coefficients")
+    st.write(pd.DataFrame({"Feature": features, "Coefficient": model.coef_}))
+    
+    # Plot results if single feature selected
+    if len(features) == 1:
+        plt.figure(figsize=(8, 6))
+        plt.scatter(X_test, y_test, color='blue', label='Actual')
+        plt.plot(X_test, y_pred, color='red', linewidth=2, label='Predicted')
+        plt.xlabel(features[0])
+        plt.ylabel(target)
+        plt.legend()
+        st.pyplot(plt)
