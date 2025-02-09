@@ -3,4 +3,3 @@ scikit-learn  # If you're using sklearn models
 numpy
 matplotlib
 pandas
-sklearn
