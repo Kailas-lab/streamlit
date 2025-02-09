@@ -1,12 +1,11 @@
 import streamlit as st
-import pickle
 import numpy as np
 import os
+import joblib
 
+model = joblib.load('n.joblib')
 # Load the trained model
-file_path = os.path.join(os.getcwd(), "linear_model.pkl")  # Get absolute path
-with open(file_path, "rb") as f:
-    model = pickle.load(f)
+
 
 # ---- Streamlit UI Styling ----
 st.set_page_config(page_title="Salary Predictor", page_icon="💰", layout="centered")
