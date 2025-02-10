@@ -47,7 +47,7 @@ st.write("Find your next favorite movie based on what you love!")
 
 # Button to redirect to GitHub for downloading the dataset
 st.markdown("""
-    <a href="https://github.com/Kailas-lab/streamlit/blob/main/Simple_Linear/salary_data.csv" target="_blank">
+    <a href="https://github.com/Kailas-lab/Machine_Learning/blob/main/Final%20Project/movies.csv" target="_blank">
         <button style="background-color:#B22222;color:white;padding:10px;border-radius:5px;font-size:16px;">
             📥 Download Movie Dataset
         </button>
