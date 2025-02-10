@@ -18,6 +18,13 @@ st.markdown("""
     .stTextInput>div>div>input { background-color: #333; color: white; }
     .stDataFrame { background-color: #1E1E1E; color: white; }
     h1, h2, h3, h4 { text-align: center; }
+    .score-box { padding: 20px; border-radius: 10px; text-align: center; font-size: 18px; }
+    .r2 { background-color: #4CAF50; color: white; }
+    .mae { background-color: #FF9800; color: white; }
+    .mse { background-color: #2196F3; color: white; }
+    .rmse { background-color: #E91E63; color: white; }
+    .center { text-align: center; }
+    .spacing { margin-top: 20px; }
     </style>
     """, unsafe_allow_html=True)
 
@@ -25,13 +32,19 @@ st.markdown("""
 st.title("📊 Simple Linear Regression App")
 st.subheader("Predicting Salaries Based on Years of Experience")
 
+# Spacing
+st.markdown("<div class='spacing'></div>", unsafe_allow_html=True)
+
 # Dataset Explanation
 st.markdown("""
 This app uses a **Simple Linear Regression model** to predict salaries based on years of experience.
 The dataset should contain two columns:
 - **YearsExperience** (Independent Variable)
 - **Salary** (Dependent Variable)
-""")
+""", unsafe_allow_html=True)
+
+# Spacing
+st.markdown("<div class='spacing'></div>", unsafe_allow_html=True)
 
 # File Upload Section
 st.sidebar.header("📂 Upload CSV File")
@@ -58,6 +71,9 @@ else:
 st.write("### 📋 Dataset Preview")
 st.dataframe(data.style.set_properties(**{"background-color": "#333", "color": "white"}))
 
+# Spacing
+st.markdown("<div class='spacing'></div>", unsafe_allow_html=True)
+
 # Ensure required columns exist
 if 'YearsExperience' in data.columns and 'Salary' in data.columns:
     # Prepare independent and dependent variables
@@ -80,6 +96,9 @@ if 'YearsExperience' in data.columns and 'Salary' in data.columns:
     mse = mean_squared_error(y_test, y_pred)
     rmse = np.sqrt(mse)
 
+    # Spacing
+    st.markdown("<div class='spacing'></div>", unsafe_allow_html=True)
+
     # Prediction Section
     st.sidebar.header("🔮 Make a Prediction")
     exp_input = st.sidebar.slider("Enter Years of Experience", min_value=0.0, max_value=50.0, step=0.1)
@@ -89,13 +108,20 @@ if 'YearsExperience' in data.columns and 'Salary' in data.columns:
         prediction = model.predict(np.array([[exp_input]]))
         st.sidebar.success(f"Predicted Salary: **${prediction[0]:,.2f}**")
 
+    # Spacing
+    st.markdown("<div class='spacing'></div>", unsafe_allow_html=True)
+
     # Model Performance Metrics
     st.write("### 📊 Model Performance Metrics")
+    
     col1, col2, col3, col4 = st.columns(4)
-    col1.metric("R² Score", f"{r2:.2f}")
-    col2.metric("MAE", f"{mae:.2f}")
-    col3.metric("MSE", f"{mse:.2f}")
-    col4.metric("RMSE", f"{rmse:.2f}")
+    col1.markdown(f"<div class='score-box r2'>R² Score<br><b>{r2:.2f}</b></div>", unsafe_allow_html=True)
+    col2.markdown(f"<div class='score-box mae'>MAE<br><b>{mae:.2f}</b></div>", unsafe_allow_html=True)
+    col3.markdown(f"<div class='score-box mse'>MSE<br><b>{mse:.2f}</b></div>", unsafe_allow_html=True)
+    col4.markdown(f"<div class='score-box rmse'>RMSE<br><b>{rmse:.2f}</b></div>", unsafe_allow_html=True)
+
+    # Spacing
+    st.markdown("<div class='spacing'></div>", unsafe_allow_html=True)
 
     # Actual vs Predicted Line Chart
     st.write("### 📈 Actual vs Predicted Salaries")
@@ -110,6 +136,9 @@ if 'YearsExperience' in data.columns and 'Salary' in data.columns:
     ax.tick_params(colors='white')
     st.pyplot(fig)
 
+    # Spacing
+    st.markdown("<div class='spacing'></div>", unsafe_allow_html=True)
+
     # Additional insights
     if st.button("🔍 Show Model Insights"):
         st.markdown("""
@@ -118,10 +147,17 @@ if 'YearsExperience' in data.columns and 'Salary' in data.columns:
         - **MSE:** Penalizes larger errors more than MAE.
         """, unsafe_allow_html=True)
 
-    # Footer with copyright
+    # Spacing
+    st.markdown("<div class='spacing'></div>", unsafe_allow_html=True)
+
+    # Footer with Copyright (Centered)
     st.markdown("""
-    ---
-    **© 2025 Simple Linear Regression App | Developed by Kailas M.**
+    <div class='center'>
+        <hr>
+        <b>© 2025 Simple Linear Regression App | Developed by Kailas M.</b>
+        <hr>
+    </div>
     """, unsafe_allow_html=True)
+    
 else:
     st.error("⚠️ Dataset must contain 'YearsExperience' and 'Salary' columns.")
